@@ -51,13 +51,16 @@ module Process
 					pipe[1].close
 					
 					options[:in] = pipe[0]
+				elsif input
+					options[:in] = input
 				end
 				
 				options[:out] = output
 				
+				# puts "run #{command.inspect} #{options.inspect}"
 				group.run(*command, **options) do |exit_status|
 					unless exit_status.success?
-						raise CommandError, self, exit_status
+						raise CommandError.new(self, exit_status)
 					end
 				end
 			end
@@ -70,10 +73,24 @@ module Process
 				end
 				
 				pipe[1].close
-				buffer = pipe[0].read
+				
+				if block_given?
+					yield pipe[0]
+				else
+					buffer = pipe[0].read
+				end
+				
 				pipe[0].close
 				
 				return buffer
+			end
+			
+			def each_line(*args, &block)
+				return to_enum(:each_line, *args) unless block_given?
+				
+				read(*args) do |output|
+					output.each_line(&block)
+				end
 			end
 			
 			def write(path, input: nil, error: $stderr)
@@ -86,8 +103,8 @@ module Process
 				return self
 			end
 			
-			def each(&block)
-				return to_enum unless block_given?
+			def steps(&block)
+				return to_enum(:steps) unless block_given?
 				
 				if self.tail
 					self.tail.each(&block)
@@ -105,7 +122,7 @@ module Process
 			end
 			
 			def inspect
-				self.each.collect(&:to_s).join(" | ")
+				self.steps.collect(&:to_s).join(" | ")
 			end
 			
 			def + pipeline
