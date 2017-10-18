@@ -25,7 +25,11 @@ module Process
 	module Pipeline
 		Step = Struct.new(:tail, :command) do
 			def dup(tail)
-				self.class.new(self.tail&.dup(tail) || tail, self.command)
+				if self.tail
+					self.class.new(self.tail.dup(tail), self.command)
+				else
+					self.class.new(tail, self.command)
+				end
 			end
 			
 			def call(*command)
@@ -34,7 +38,11 @@ module Process
 			
 			def spawn(group, input, output, error)
 				if self.command.nil?
-					return self.tail&.call(group, input, output, error)
+					if tail = self.tail
+						return tail.call(group, input, output, error)
+					else
+						return nil
+					end
 				end
 				
 				if Hash === self.command.last
