@@ -33,7 +33,7 @@ RSpec.describe Process::Pipeline do
 		output, input = IO.pipe
 
 		thread = Thread.new do
-			%w{The quick brown fox jumps over the lazy dog}.each do |word|
+			%w{the quick brown fox jumps over the lazy dog}.each do |word|
 				input.puts word
 			end
 			
@@ -43,6 +43,6 @@ RSpec.describe Process::Pipeline do
 		# The input to the command is the output of the pipe
 		buffer = pipeline.read(input: output)
 		
-		expect(buffer).to be == "The\nbrown\ndog\nfox\njumps\nlazy\nover\nquick\nthe\n"
+		expect(buffer).to be == "brown\ndog\nfox\njumps\nlazy\nover\nquick\nthe\nthe\n"
 	end
 end
