@@ -96,7 +96,7 @@ module Process
 			def each_line(*args, &block)
 				return to_enum(:each_line, *args) unless block_given?
 				
-				read(*args) do |output|
+				read(**args[0]) do |output|
 					output.each_line(&block)
 				end
 			end

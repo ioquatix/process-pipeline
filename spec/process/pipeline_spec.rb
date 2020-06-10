@@ -32,7 +32,7 @@ RSpec.describe Process::Pipeline do
 
 		output, input = IO.pipe
 
-		thread = Thread.new do
+		Thread.new do
 			%w{the quick brown fox jumps over the lazy dog}.each do |word|
 				input.puts word
 			end
