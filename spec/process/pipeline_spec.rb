@@ -1,8 +1,11 @@
-require "spec_helper"
+
+require 'process/pipeline'
 
 RSpec.describe Process::Pipeline do
+	let(:path) {File.expand_path("words.txt", __dir__)}
+	
 	it "can execute basic pipeline and read output" do
-		pipeline = Process::Pipeline.("cat Rakefile").("strings").("sort")
+		pipeline = Process::Pipeline.("cat", path).("strings").("sort")
 		buffer = nil
 		
 		buffer = pipeline.read
@@ -21,10 +24,10 @@ RSpec.describe Process::Pipeline do
 	it "can read some lines" do
 		pipeline = Process::Pipeline.("head").("sort")
 		
-		words = pipeline.each_line(input: "/usr/share/dict/words").to_a
+		words = pipeline.each_line(input: path).to_a
 		
 		expect(words).to_not be_empty
-		expect(words.first).to be == "A\n"
+		expect(words.first).to be == "brown\n"
 	end
 	
 	it "can feed data into pipeline using a thread" do

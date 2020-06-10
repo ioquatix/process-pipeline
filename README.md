@@ -1,9 +1,8 @@
 # Process::Pipeline
 
-Provides a simple API for making composable shell pipelines.
+Provides a simple API for making composable shell-style pipelines.
 
-[![Build Status](https://travis-ci.org/ioquatix/graphviz.svg)](https://travis-ci.org/ioquatix/graphviz)
-[![Coverage Status](https://coveralls.io/repos/ioquatix/graphviz/badge.svg)](https://coveralls.io/r/ioquatix/graphviz)
+[![Development Status](https://github.com/ioquatix/process-pipeline/workflows/Development/badge.svg)](https://github.com/ioquatix/process-pipeline/actions?workflow=Development)
 
 ## Installation
 
@@ -57,7 +56,7 @@ pipeline.read do |output|
 	buffer = output.read(8)
 end
 
-# Read all data into a file:
+# Write all data into a file:
 pipeline.write("entropy.dat")
 ```
 
